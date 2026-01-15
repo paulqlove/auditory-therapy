@@ -24,6 +24,43 @@ A [January 2026 study](https://www.pnas.org/doi/10.1073/pnas.2529565123) from th
 - **Duration of effect**: Unlike rodent studies where effects disappeared after 7 days, the elevated Aβ levels in primates persisted for more than 5 weeks
 - **Significance**: First primate evidence that 40-Hz auditory stimulation can sustainably modulate Aβ metabolism in the brain
 
+## Cognitive Enhancement & Focus
+
+Beyond therapeutic applications, 40-Hz gamma entrainment has shown promise for cognitive enhancement in healthy individuals.
+
+### Gamma Waves and Peak Performance
+
+Gamma oscillations (30-80 Hz) are associated with:
+- **Heightened focus and concentration** - Reduced susceptibility to external distractions
+- **Enhanced working memory** - Improved information processing and retention
+- **Flow states** - The mental state of complete immersion in an activity
+- **Cross-brain communication** - Synchronized neural activity across different brain regions
+
+### Research on Cognitive Enhancement
+
+- An [exploratory pilot study](https://pmc.ncbi.nlm.nih.gov/articles/PMC7683678/) found that 40-Hz entrainment improved mood, memory, and cognition, with participants showing mean cognitive score improvements from 75% to 85%
+- [MIT research](https://news.mit.edu/2025/evidence-40hz-gamma-stimulation-promotes-brain-health-expanding-0314) on "GENUS" (Gamma Entrainment Using Sensory Stimulation) has shown benefits extending beyond Alzheimer's to general brain health
+- A [2025 bioRxiv study](https://www.biorxiv.org/content/10.1101/2025.08.25.671937v1.full) demonstrated that 40-Hz audiovisual stimulation improves sustained attention and related brain oscillations
+- [Research in Frontiers](https://www.frontiersin.org/journals/aging-neuroscience/articles/10.3389/fnagi.2022.1010765/full) showed that combining cognitive tasks with 40-Hz stimulation enhances gamma entrainment and propagates it to deep brain areas including the hippocampus
+
+### How It May Enhance Focus
+
+When the brain is entrained to 40-Hz gamma oscillations:
+1. **Neural synchronization** increases across brain regions
+2. **Information binding** improves - the brain more effectively combines sensory inputs into coherent perception
+3. **Attentional resources** are enhanced, making it easier to maintain focus on demanding tasks
+4. **Default mode network** activity may decrease, reducing mind-wandering
+
+### Practical Use for Focus
+
+Some users incorporate 40-Hz stimulation into:
+- Deep work sessions requiring sustained concentration
+- Study or learning periods
+- Creative work requiring flow states
+- Meditation practice
+
+**Note**: While promising, research on cognitive enhancement in healthy adults is still emerging, and results have been mixed. Individual responses may vary.
+
 ## Audio Implementation
 
 This app replicates the exact auditory stimulus parameters from the PNAS study:
@@ -95,11 +132,21 @@ Then visit http://localhost:8000
 
 ## References
 
+### Alzheimer's & Therapeutic Research
+
 1. Wang, W., Huang, R., Lv, L., et al. (2026). Long-term effects of forty-hertz auditory stimulation as a treatment of Alzheimer's disease: Insights from an aged monkey model study. *PNAS*, 123(2), e2529565123. https://doi.org/10.1073/pnas.2529565123
 
 2. Martorell, A.J., et al. (2019). Multi-sensory gamma stimulation ameliorates Alzheimer's-associated pathology and improves cognition. *Cell*, 177(2), 256-271.
 
 3. Iaccarino, H.F., et al. (2016). Gamma frequency entrainment attenuates amyloid load and modifies microglia. *Nature*, 540(7632), 230-235.
+
+### Cognitive Enhancement Research
+
+4. Jirakittayakorn, N. & Wongsawat, Y. (2017). Brain responses to 40-Hz binaural beat and effects on emotion and memory. *Int J Psychophysiol*, 120, 96-107.
+
+5. Carstensen, M.S., et al. (2020). Gamma entrainment frequency affects mood, memory and cognition: an exploratory pilot study. *BMC Neuroscience*. https://pmc.ncbi.nlm.nih.gov/articles/PMC7683678/
+
+6. Shen, L., et al. (2022). Cognitive tasks propagate the neural entrainment in response to a visual 40 Hz stimulation in humans. *Frontiers in Aging Neuroscience*. https://doi.org/10.3389/fnagi.2022.1010765
 
 ## Disclaimer
 
