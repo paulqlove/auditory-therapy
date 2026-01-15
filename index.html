@@ -302,6 +302,53 @@
     let pulseInterval = null;
     let remainingSeconds = 60 * 60; // 1 hour
     let pulseCount = 0;
+    let wakeLock = null;
+
+    // Request wake lock to prevent screen from sleeping
+    async function requestWakeLock() {
+      if ('wakeLock' in navigator) {
+        try {
+          wakeLock = await navigator.wakeLock.request('screen');
+          wakeLock.addEventListener('release', () => {
+            console.log('Wake lock released');
+          });
+          console.log('Wake lock acquired');
+        } catch (err) {
+          console.log('Wake lock request failed:', err.message);
+        }
+      }
+    }
+
+    // Release wake lock
+    async function releaseWakeLock() {
+      if (wakeLock) {
+        await wakeLock.release();
+        wakeLock = null;
+      }
+    }
+
+    // Handle visibility change - resume audio if tab becomes visible again
+    document.addEventListener('visibilitychange', async () => {
+      if (document.visibilityState === 'visible' && isPlaying) {
+        // Re-acquire wake lock when page becomes visible
+        await requestWakeLock();
+
+        // Resume audio context if it was suspended
+        if (audioContext && audioContext.state === 'suspended') {
+          await audioContext.resume();
+          console.log('Audio context resumed');
+        }
+      }
+    });
+
+    // Periodically check and resume audio context (helps on mobile)
+    setInterval(() => {
+      if (isPlaying && audioContext && audioContext.state === 'suspended') {
+        audioContext.resume().then(() => {
+          console.log('Audio context resumed from periodic check');
+        });
+      }
+    }, 1000);
 
     // DOM elements
     const timerDisplay = document.getElementById('timer');
@@ -393,12 +440,20 @@
       });
     }
 
-    function startStimulation() {
+    async function startStimulation() {
       if (isPlaying) return;
+
+      // Request wake lock to keep screen on / audio playing
+      await requestWakeLock();
 
       // Initialize audio context
       audioContext = new (window.AudioContext || window.webkitAudioContext)();
-      
+
+      // Resume audio context if needed (required for some browsers)
+      if (audioContext.state === 'suspended') {
+        await audioContext.resume();
+      }
+
       // Create master gain for volume control
       masterGain = audioContext.createGain();
       const volume = volumeSlider.value / 100;
@@ -427,8 +482,11 @@
       }, 1000);
     }
 
-    function stopStimulation() {
+    async function stopStimulation() {
       if (!isPlaying) return;
+
+      // Release wake lock
+      await releaseWakeLock();
 
       // Stop pulse train
       if (pulseInterval) {
@@ -461,8 +519,8 @@
       });
     }
 
-    function resetTimer() {
-      stopStimulation();
+    async function resetTimer() {
+      await stopStimulation();
       remainingSeconds = 60 * 60;
       pulseCount = 0;
       pulseCountDisplay.textContent = '0';
