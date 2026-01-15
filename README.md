@@ -61,9 +61,13 @@ Some users incorporate 40-Hz stimulation into:
 
 **Note**: While promising, research on cognitive enhancement in healthy adults is still emerging, and results have been mixed. Individual responses may vary.
 
-## Audio Implementation
+## Audio Modes
 
-This app replicates the exact auditory stimulus parameters from the PNAS study:
+This app offers two distinct 40-Hz stimulation methods, each backed by research:
+
+### Mode 1: Click Train (PNAS Study Protocol)
+
+Replicates the exact auditory stimulus parameters from the PNAS 2026 primate study:
 
 | Parameter | Study Protocol | This App |
 |-----------|---------------|----------|
@@ -74,12 +78,10 @@ This app replicates the exact auditory stimulus parameters from the PNAS study:
 | Treatment period | 7 consecutive days | User-managed |
 | Intensity | 60 dB | User-adjustable volume |
 
-### How It Works
-
-The stimulation consists of **click trains** - brief 1-millisecond bursts of a 1 kHz pure tone, repeated 40 times per second. This is different from continuous amplitude modulation; each "click" is a discrete sound event that creates the 40-Hz rhythm perceived by the auditory system and transmitted to the temporal cortex and hippocampus.
+**How it works**: Brief 1-millisecond bursts of a 1 kHz pure tone, repeated 40 times per second. Each "click" is a discrete sound event that creates the 40-Hz rhythm perceived by the auditory system.
 
 ```
-Sound pattern (not to scale):
+Click Train pattern (not to scale):
 
 |█|                       |█|                       |█|
 0ms                      25ms                     50ms
@@ -87,15 +89,59 @@ Sound pattern (not to scale):
      of 1kHz                  of 1kHz                  of 1kHz
 ```
 
+**Best for**: Alzheimer's research protocol replication, direct auditory stimulation
+
+---
+
+### Mode 2: Binaural Beats (Cognitive Enhancement)
+
+Uses the psychoacoustic phenomenon of binaural beats, commonly used in cognitive enhancement research:
+
+| Parameter | This App |
+|-----------|----------|
+| Left ear frequency | 200 Hz continuous sine wave |
+| Right ear frequency | 240 Hz continuous sine wave |
+| Perceived beat frequency | 40 Hz (240 - 200 = 40) |
+| Headphones | **Required** (stereo) |
+
+**How it works**: Two slightly different frequencies are played to each ear. Your brain perceives a "phantom" beat at the frequency difference (40 Hz). This method was used in the [cognitive enhancement pilot study](https://pmc.ncbi.nlm.nih.gov/articles/PMC7683678/) that showed improvements in mood, memory, and cognition.
+
+```
+Binaural Beats pattern:
+
+Left Ear:   ∿∿∿∿∿∿∿∿∿∿∿∿∿∿∿∿  (200 Hz continuous)
+Right Ear:  ∿∿∿∿∿∿∿∿∿∿∿∿∿∿∿∿∿ (240 Hz continuous)
+Brain:      ▁▂▃▄▅▆▇█▇▆▅▄▃▂▁▂▃▄ (perceives 40 Hz beat)
+```
+
+**Best for**: Focus and concentration, cognitive enhancement, flow states, meditation
+
+---
+
+### Which Mode Should I Use?
+
+| Use Case | Recommended Mode |
+|----------|-----------------|
+| Following Alzheimer's research protocol | Click Train |
+| Focus and deep work | Either (try both) |
+| Cognitive enhancement | Binaural Beats |
+| No headphones available | Click Train |
+| Meditation/relaxation | Binaural Beats |
+
+**Research note**: [Comparative studies](https://www.researchgate.net/publication/356174078_Effects_of_binaural_beats_and_isochronic_tones_on_brain_wave_modulation_Literature_review) suggest that isochronic tones (similar to click trains) may produce stronger brainwave entrainment than binaural beats, showing 15% greater brain response. However, binaural beats have a larger body of cognitive enhancement research behind them.
+
 ## Features
 
-- Exact replication of PNAS 2026 study methodology
+- **Two stimulation modes**:
+  - Click Train (PNAS 2026 study protocol)
+  - Binaural Beats (cognitive enhancement research)
 - 60-minute countdown timer matching the study protocol
 - Adjustable volume control
 - Visual pulse indicator and waveform display
-- Pulse counter showing total stimulation events
+- Pulse/time counter showing session progress
 - **Background playback support** - Uses Screen Wake Lock API to continue playing when screen is off
 - Mobile-friendly design
+- Mode-specific information display
 
 ## How to Run
 
