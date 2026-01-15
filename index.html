@@ -1,0 +1,350 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>40-Hz Auditory Therapy</title>
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+      background: linear-gradient(135deg, #1a1a2e 0%, #16213e 100%);
+      min-height: 100vh;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: #fff;
+    }
+
+    .container {
+      text-align: center;
+      padding: 2rem;
+    }
+
+    .timer {
+      font-size: 5rem;
+      font-weight: 200;
+      font-variant-numeric: tabular-nums;
+      margin-bottom: 2rem;
+      letter-spacing: 0.05em;
+    }
+
+    .controls {
+      display: flex;
+      gap: 1rem;
+      justify-content: center;
+      margin-bottom: 2rem;
+    }
+
+    button {
+      padding: 1rem 2.5rem;
+      font-size: 1.1rem;
+      border: none;
+      border-radius: 50px;
+      cursor: pointer;
+      transition: all 0.2s ease;
+      font-weight: 500;
+    }
+
+    .start-btn {
+      background: #4ade80;
+      color: #000;
+    }
+
+    .start-btn:hover {
+      background: #22c55e;
+      transform: scale(1.05);
+    }
+
+    .stop-btn {
+      background: #f87171;
+      color: #000;
+    }
+
+    .stop-btn:hover {
+      background: #ef4444;
+      transform: scale(1.05);
+    }
+
+    .reset-btn {
+      background: #94a3b8;
+      color: #000;
+    }
+
+    .reset-btn:hover {
+      background: #64748b;
+      transform: scale(1.05);
+    }
+
+    .status {
+      font-size: 1.2rem;
+      color: #94a3b8;
+      margin-bottom: 1rem;
+    }
+
+    .status.playing {
+      color: #4ade80;
+    }
+
+    .volume-control {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 1rem;
+      margin-top: 1rem;
+    }
+
+    .volume-control label {
+      color: #94a3b8;
+    }
+
+    input[type="range"] {
+      width: 150px;
+      cursor: pointer;
+    }
+
+    .frequency {
+      font-size: 0.9rem;
+      color: #64748b;
+      margin-top: 2rem;
+    }
+
+    .toggle-control {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 0.75rem;
+      margin-top: 1.5rem;
+    }
+
+    .toggle-control label {
+      color: #94a3b8;
+      cursor: pointer;
+    }
+
+    .toggle {
+      position: relative;
+      width: 50px;
+      height: 26px;
+    }
+
+    .toggle input {
+      opacity: 0;
+      width: 0;
+      height: 0;
+    }
+
+    .toggle-slider {
+      position: absolute;
+      cursor: pointer;
+      top: 0;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      background-color: #475569;
+      transition: 0.3s;
+      border-radius: 26px;
+    }
+
+    .toggle-slider:before {
+      position: absolute;
+      content: "";
+      height: 20px;
+      width: 20px;
+      left: 3px;
+      bottom: 3px;
+      background-color: white;
+      transition: 0.3s;
+      border-radius: 50%;
+    }
+
+    .toggle input:checked + .toggle-slider {
+      background-color: #4ade80;
+    }
+
+    .toggle input:checked + .toggle-slider:before {
+      transform: translateX(24px);
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <div class="status" id="status">Ready</div>
+    <div class="timer" id="timer">60:00</div>
+    <div class="controls">
+      <button class="start-btn" id="startBtn">Start</button>
+      <button class="stop-btn" id="stopBtn">Stop</button>
+      <button class="reset-btn" id="resetBtn">Reset</button>
+    </div>
+    <div class="volume-control">
+      <label for="volume">Volume:</label>
+      <input type="range" id="volume" min="0" max="100" value="30">
+      <span id="volumeValue">30%</span>
+    </div>
+    <div class="toggle-control">
+      <label for="carrierToggle">Pure 40 Hz</label>
+      <div class="toggle">
+        <input type="checkbox" id="carrierToggle" checked>
+        <span class="toggle-slider"></span>
+      </div>
+      <label for="carrierToggle">1 kHz carrier</label>
+    </div>
+    <div class="frequency" id="frequencyLabel">1 kHz carrier, 40 Hz AM</div>
+  </div>
+
+  <script>
+    let audioContext = null;
+    let carrierOscillator = null;
+    let modulatorOscillator = null;
+    let carrierGain = null;
+    let modulatorGain = null;
+    let masterGain = null;
+    let isPlaying = false;
+    let timerInterval = null;
+    let remainingSeconds = 60 * 60; // 1 hour
+
+    const timerDisplay = document.getElementById('timer');
+    const statusDisplay = document.getElementById('status');
+    const startBtn = document.getElementById('startBtn');
+    const stopBtn = document.getElementById('stopBtn');
+    const resetBtn = document.getElementById('resetBtn');
+    const volumeSlider = document.getElementById('volume');
+    const volumeValue = document.getElementById('volumeValue');
+    const carrierToggle = document.getElementById('carrierToggle');
+    const frequencyLabel = document.getElementById('frequencyLabel');
+
+    function formatTime(seconds) {
+      const mins = Math.floor(seconds / 60);
+      const secs = seconds % 60;
+      return `${mins.toString().padStart(2, '0')}:${secs.toString().padStart(2, '0')}`;
+    }
+
+    function updateTimerDisplay() {
+      timerDisplay.textContent = formatTime(remainingSeconds);
+    }
+
+    function startTone() {
+      if (isPlaying) return;
+
+      audioContext = new (window.AudioContext || window.webkitAudioContext)();
+      masterGain = audioContext.createGain();
+      const volume = volumeSlider.value / 100;
+      masterGain.gain.setValueAtTime(volume, audioContext.currentTime);
+
+      if (carrierToggle.checked) {
+        // 1 kHz carrier with 40 Hz AM
+        carrierOscillator = audioContext.createOscillator();
+        carrierOscillator.type = 'sine';
+        carrierOscillator.frequency.setValueAtTime(1000, audioContext.currentTime);
+
+        modulatorOscillator = audioContext.createOscillator();
+        modulatorOscillator.type = 'sine';
+        modulatorOscillator.frequency.setValueAtTime(40, audioContext.currentTime);
+
+        carrierGain = audioContext.createGain();
+        modulatorGain = audioContext.createGain();
+
+        modulatorGain.gain.setValueAtTime(0.5, audioContext.currentTime);
+        carrierGain.gain.setValueAtTime(0.5, audioContext.currentTime);
+
+        modulatorOscillator.connect(modulatorGain);
+        modulatorGain.connect(carrierGain.gain);
+
+        carrierOscillator.connect(carrierGain);
+        carrierGain.connect(masterGain);
+
+        carrierOscillator.start();
+        modulatorOscillator.start();
+      } else {
+        // Pure 40 Hz tone
+        carrierOscillator = audioContext.createOscillator();
+        carrierOscillator.type = 'sine';
+        carrierOscillator.frequency.setValueAtTime(40, audioContext.currentTime);
+
+        carrierOscillator.connect(masterGain);
+        carrierOscillator.start();
+      }
+
+      masterGain.connect(audioContext.destination);
+
+      isPlaying = true;
+      statusDisplay.textContent = 'Playing';
+      statusDisplay.classList.add('playing');
+
+      timerInterval = setInterval(() => {
+        if (remainingSeconds > 0) {
+          remainingSeconds--;
+          updateTimerDisplay();
+        } else {
+          stopTone();
+          statusDisplay.textContent = 'Session Complete';
+        }
+      }, 1000);
+    }
+
+    function stopTone() {
+      if (!isPlaying) return;
+
+      if (carrierOscillator) {
+        carrierOscillator.stop();
+        carrierOscillator.disconnect();
+      }
+      if (modulatorOscillator) {
+        modulatorOscillator.stop();
+        modulatorOscillator.disconnect();
+      }
+      if (carrierGain) carrierGain.disconnect();
+      if (modulatorGain) modulatorGain.disconnect();
+      if (masterGain) masterGain.disconnect();
+      if (audioContext) {
+        audioContext.close();
+      }
+
+      if (timerInterval) {
+        clearInterval(timerInterval);
+        timerInterval = null;
+      }
+
+      isPlaying = false;
+      statusDisplay.textContent = 'Paused';
+      statusDisplay.classList.remove('playing');
+    }
+
+    function resetTimer() {
+      stopTone();
+      remainingSeconds = 60 * 60;
+      updateTimerDisplay();
+      statusDisplay.textContent = 'Ready';
+    }
+
+    startBtn.addEventListener('click', startTone);
+    stopBtn.addEventListener('click', stopTone);
+    resetBtn.addEventListener('click', resetTimer);
+
+    volumeSlider.addEventListener('input', (e) => {
+      const volume = e.target.value / 100;
+      volumeValue.textContent = `${e.target.value}%`;
+      if (masterGain && isPlaying) {
+        masterGain.gain.setValueAtTime(volume, audioContext.currentTime);
+      }
+    });
+
+    carrierToggle.addEventListener('change', () => {
+      frequencyLabel.textContent = carrierToggle.checked
+        ? '1 kHz carrier, 40 Hz AM'
+        : 'Pure 40 Hz';
+      if (isPlaying) {
+        stopTone();
+        startTone();
+      }
+    });
+
+    updateTimerDisplay();
+  </script>
+</body>
+</html>
