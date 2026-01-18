@@ -179,9 +179,12 @@
     }
 
     .visualizer-container {
-      height: 60px;
+      min-height: 60px;
       margin-bottom: 1.5rem;
       position: relative;
+      display: flex;
+      justify-content: center;
+      align-items: center;
     }
 
     .visualizer {
@@ -211,8 +214,7 @@
 
     .sine-visualizer {
       display: none;
-      width: 100%;
-      height: 60px;
+      /* Width and height set dynamically by JS */
     }
 
     .sine-visualizer.visible {
@@ -395,6 +397,17 @@
     const VISUAL_LEFT_FREQ = 2;   // Visual representation of 200 Hz
     const VISUAL_RIGHT_FREQ = 2.4; // Visual representation of 240 Hz (creates visible 0.4 Hz beat)
 
+    // Pixel grid configuration
+    const GRID_COLS = 30;
+    const GRID_ROWS = 8;
+    const PIXEL_GAP = 2;
+    const PIXEL_COLORS = {
+      background: '#1e293b',
+      leftWave: '#22c55e',
+      rightWave: '#06b6d4',
+      overlap: '#fbbf24'
+    };
+
     // Request wake lock to prevent screen from sleeping
     async function requestWakeLock() {
       if ('wakeLock' in navigator) {
@@ -473,17 +486,36 @@
       visualizer.appendChild(bar);
     }
 
-    // Setup sine wave canvas
-    function setupSineCanvas() {
-      const container = sineVisualizer.parentElement;
-      sineVisualizer.width = container.offsetWidth || 300;
-      sineVisualizer.height = 60;
+    // Calculate which row a wave occupies at a given X position
+    function calculateWaveRow(normalizedX, elapsedTime, frequency) {
+      const t = normalizedX * Math.PI * 4 + elapsedTime * frequency * Math.PI * 2;
+      const sineValue = Math.sin(t); // -1 to 1
+      // Map sine value (-1 to 1) to row (0 to 7)
+      const row = Math.floor((1 - sineValue) / 2 * (GRID_ROWS - 1) + 0.5);
+      return Math.max(0, Math.min(GRID_ROWS - 1, row));
     }
-    setupSineCanvas();
-    window.addEventListener('resize', setupSineCanvas);
 
-    // Draw sine waves for binaural visualization
-    function drawSineWaves(timestamp) {
+    // Setup pixel grid canvas
+    let cachedSquareSize = 8;
+    function setupPixelCanvas() {
+      const container = sineVisualizer.parentElement;
+      const containerWidth = container.offsetWidth || 300;
+
+      // Calculate square size to fit container
+      const squareSize = Math.floor((containerWidth - (GRID_COLS - 1) * PIXEL_GAP) / GRID_COLS);
+      cachedSquareSize = Math.max(4, squareSize); // Minimum 4px squares
+
+      const totalWidth = GRID_COLS * cachedSquareSize + (GRID_COLS - 1) * PIXEL_GAP;
+      const totalHeight = GRID_ROWS * cachedSquareSize + (GRID_ROWS - 1) * PIXEL_GAP;
+
+      sineVisualizer.width = totalWidth;
+      sineVisualizer.height = totalHeight;
+    }
+    setupPixelCanvas();
+    window.addEventListener('resize', setupPixelCanvas);
+
+    // Draw pixel grid for binaural visualization
+    function drawPixelGrid(timestamp) {
       if (!isPlaying || currentMode !== 'binaural') {
         return;
       }
@@ -491,51 +523,58 @@
       if (!sineStartTime) sineStartTime = timestamp;
       const elapsed = (timestamp - sineStartTime) / 1000; // seconds
 
-      const width = sineVisualizer.width;
-      const height = sineVisualizer.height;
-      const centerY = height / 2;
-      const amplitude = height * 0.35;
+      const squareSize = cachedSquareSize;
 
       // Clear canvas
-      sineCtx.clearRect(0, 0, width, height);
+      sineCtx.clearRect(0, 0, sineVisualizer.width, sineVisualizer.height);
 
-      // Draw left wave (200 Hz visual representation)
-      sineCtx.beginPath();
-      sineCtx.strokeStyle = '#4ade80'; // Green
-      sineCtx.lineWidth = 2;
-      for (let x = 0; x < width; x++) {
-        const t = (x / width) * Math.PI * 4 + elapsed * VISUAL_LEFT_FREQ * Math.PI * 2;
-        const y = centerY + Math.sin(t) * amplitude * 0.8;
-        if (x === 0) {
-          sineCtx.moveTo(x, y);
-        } else {
-          sineCtx.lineTo(x, y);
+      // Calculate grid state: 0=empty, 1=left, 2=right, 3=overlap
+      const grid = [];
+      for (let row = 0; row < GRID_ROWS; row++) {
+        grid[row] = [];
+        for (let col = 0; col < GRID_COLS; col++) {
+          grid[row][col] = 0;
         }
       }
-      sineCtx.stroke();
 
-      // Draw right wave (240 Hz visual representation) - slightly offset
-      sineCtx.beginPath();
-      sineCtx.strokeStyle = 'rgba(74, 222, 128, 0.5)'; // Lighter green
-      sineCtx.lineWidth = 2;
-      for (let x = 0; x < width; x++) {
-        const t = (x / width) * Math.PI * 4 + elapsed * VISUAL_RIGHT_FREQ * Math.PI * 2;
-        const y = centerY + Math.sin(t) * amplitude * 0.8;
-        if (x === 0) {
-          sineCtx.moveTo(x, y);
-        } else {
-          sineCtx.lineTo(x, y);
+      // Mark wave positions
+      for (let col = 0; col < GRID_COLS; col++) {
+        const normalizedX = col / (GRID_COLS - 1);
+
+        const leftRow = calculateWaveRow(normalizedX, elapsed, VISUAL_LEFT_FREQ);
+        grid[leftRow][col] |= 1;
+
+        const rightRow = calculateWaveRow(normalizedX, elapsed, VISUAL_RIGHT_FREQ);
+        grid[rightRow][col] |= 2;
+      }
+
+      // Draw the grid
+      for (let row = 0; row < GRID_ROWS; row++) {
+        for (let col = 0; col < GRID_COLS; col++) {
+          const x = col * (squareSize + PIXEL_GAP);
+          const y = row * (squareSize + PIXEL_GAP);
+          const state = grid[row][col];
+
+          let color;
+          switch (state) {
+            case 0: color = PIXEL_COLORS.background; break;
+            case 1: color = PIXEL_COLORS.leftWave; break;
+            case 2: color = PIXEL_COLORS.rightWave; break;
+            case 3: color = PIXEL_COLORS.overlap; break;
+          }
+
+          sineCtx.fillStyle = color;
+          sineCtx.fillRect(x, y, squareSize, squareSize);
         }
       }
-      sineCtx.stroke();
 
-      sineAnimationId = requestAnimationFrame(drawSineWaves);
+      sineAnimationId = requestAnimationFrame(drawPixelGrid);
     }
 
-    // Start sine wave animation
+    // Start pixel grid animation
     function startSineAnimation() {
       sineStartTime = null;
-      sineAnimationId = requestAnimationFrame(drawSineWaves);
+      sineAnimationId = requestAnimationFrame(drawPixelGrid);
     }
 
     // Stop sine wave animation
