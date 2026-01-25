@@ -67,6 +67,47 @@ export function TherapySession() {
   const setShowOnboarding = usePreferencesStore(
     (state) => state.setShowOnboarding,
   );
+  const defaultMode = usePreferencesStore((state) => state.defaultMode);
+  const defaultDuration = usePreferencesStore((state) => state.defaultDuration);
+  const defaultVolume = usePreferencesStore((state) => state.defaultVolume);
+
+  // Apply user's default preferences on initial load
+  const preferencesApplied = useRef(false);
+  useEffect(() => {
+    // Wait for preferences to hydrate from localStorage
+    // Default values from DEFAULT_PREFERENCES won't match user's saved preferences
+    const unsubscribe = usePreferencesStore.persist.onFinishHydration(() => {
+      if (!preferencesApplied.current && status === "idle") {
+        const prefs = usePreferencesStore.getState();
+        setMode(prefs.defaultMode);
+        setDuration(prefs.defaultDuration);
+        setVolume(prefs.defaultVolume);
+        preferencesApplied.current = true;
+      }
+    });
+
+    // If already hydrated, apply immediately
+    if (
+      usePreferencesStore.persist.hasHydrated() &&
+      !preferencesApplied.current &&
+      status === "idle"
+    ) {
+      setMode(defaultMode);
+      setDuration(defaultDuration);
+      setVolume(defaultVolume);
+      preferencesApplied.current = true;
+    }
+
+    return unsubscribe;
+  }, [
+    status,
+    defaultMode,
+    defaultDuration,
+    defaultVolume,
+    setMode,
+    setDuration,
+    setVolume,
+  ]);
 
   const isPlaying = status === "playing";
 
