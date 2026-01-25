@@ -32,15 +32,21 @@ function StatCard({
   subtext?: string;
 }) {
   return (
-    <div className="rounded-xl bg-gray-800 p-4">
+    <div className="rounded-xl bg-gray-100 dark:bg-gray-800 p-4">
       <div className="flex items-center gap-3">
         <div className="flex h-10 w-10 items-center justify-center rounded-lg bg-green-500/20">
-          <Icon className="h-5 w-5 text-green-400" />
+          <Icon className="h-5 w-5 text-green-600 dark:text-green-400" />
         </div>
         <div>
-          <p className="text-2xl font-bold text-gray-100">{value}</p>
+          <p className="text-2xl font-bold text-gray-900 dark:text-gray-100">
+            {value}
+          </p>
           <p className="text-xs text-gray-500">{label}</p>
-          {subtext && <p className="text-xs text-gray-400">{subtext}</p>}
+          {subtext && (
+            <p className="text-xs text-gray-600 dark:text-gray-400">
+              {subtext}
+            </p>
+          )}
         </div>
       </div>
     </div>
@@ -59,7 +65,6 @@ function SessionItem({
   const modeLabels: Record<TherapyMode, string> = {
     clicktrain: "Click Train",
     binaural: "Binaural",
-    combined: "Combined",
   };
 
   const date = new Date(session.completedAt);
@@ -74,14 +79,14 @@ function SessionItem({
   });
 
   return (
-    <div className="rounded-lg border border-gray-700 bg-gray-800/50">
+    <div className="rounded-lg border border-gray-300 dark:border-gray-700 bg-gray-100/50 dark:bg-gray-800/50">
       <button
         onClick={() => setExpanded(!expanded)}
         className="flex w-full items-center justify-between p-4 text-left"
       >
         <div className="flex items-center gap-4">
           <div>
-            <p className="font-medium text-gray-100">
+            <p className="font-medium text-gray-900 dark:text-gray-100">
               {formatDuration(session.actualDuration)}
             </p>
             <p className="text-xs text-gray-500">
@@ -90,7 +95,7 @@ function SessionItem({
           </div>
         </div>
         <div className="flex items-center gap-3">
-          <span className="rounded-full bg-gray-700 px-2 py-0.5 text-xs text-gray-300">
+          <span className="rounded-full bg-gray-200 dark:bg-gray-700 px-2 py-0.5 text-xs text-gray-700 dark:text-gray-300">
             {modeLabels[session.mode]}
           </span>
           {expanded ? (
@@ -102,17 +107,17 @@ function SessionItem({
       </button>
 
       {expanded && (
-        <div className="border-t border-gray-700 p-4">
+        <div className="border-t border-gray-300 dark:border-gray-700 p-4">
           <div className="grid grid-cols-2 gap-4 text-sm">
             <div>
               <p className="text-gray-500">Planned Duration</p>
-              <p className="text-gray-300">
+              <p className="text-gray-700 dark:text-gray-300">
                 {formatDuration(session.duration)}
               </p>
             </div>
             <div>
               <p className="text-gray-500">Actual Duration</p>
-              <p className="text-gray-300">
+              <p className="text-gray-700 dark:text-gray-300">
                 {formatDuration(session.actualDuration)}
               </p>
             </div>
@@ -120,13 +125,13 @@ function SessionItem({
               <p className="text-gray-500">
                 {session.mode === "binaural" ? "Seconds" : "Pulses"}
               </p>
-              <p className="text-gray-300">
+              <p className="text-gray-700 dark:text-gray-300">
                 {session.pulseCount.toLocaleString()}
               </p>
             </div>
             <div>
               <p className="text-gray-500">Visual Flicker</p>
-              <p className="text-gray-300">
+              <p className="text-gray-700 dark:text-gray-300">
                 {session.visualFlickerUsed ? "Yes" : "No"}
               </p>
             </div>
@@ -135,7 +140,9 @@ function SessionItem({
           {session.notes && (
             <div className="mt-4">
               <p className="text-gray-500 text-sm">Notes</p>
-              <p className="mt-1 text-gray-300">{session.notes}</p>
+              <p className="mt-1 text-gray-700 dark:text-gray-300">
+                {session.notes}
+              </p>
             </div>
           )}
 
@@ -214,16 +221,18 @@ export default function DashboardPage() {
   };
 
   return (
-    <div className="min-h-screen bg-gray-900">
+    <div className="min-h-screen bg-white dark:bg-gray-900">
       {/* Header */}
-      <header className="flex items-center justify-between border-b border-gray-800 px-4 py-3">
+      <header className="flex items-center justify-between border-b border-gray-200 dark:border-gray-800 px-4 py-3">
         <div className="flex items-center gap-3">
           <Link href="/">
             <Button variant="ghost" size="sm">
               <ArrowLeft className="h-4 w-4" />
             </Button>
           </Link>
-          <h1 className="text-lg font-semibold text-gray-100">Dashboard</h1>
+          <h1 className="text-lg font-semibold text-gray-900 dark:text-gray-100">
+            Dashboard
+          </h1>
         </div>
         <div className="flex items-center gap-2">
           <Button variant="ghost" size="sm" onClick={exportCSV}>
@@ -265,28 +274,22 @@ export default function DashboardPage() {
 
         {/* Mode Breakdown */}
         {stats.totalSessions > 0 && (
-          <div className="mt-6 rounded-xl bg-gray-800 p-4">
-            <h2 className="mb-3 text-sm font-medium text-gray-400">
+          <div className="mt-6 rounded-xl bg-gray-100 dark:bg-gray-800 p-4">
+            <h2 className="mb-3 text-sm font-medium text-gray-600 dark:text-gray-400">
               Mode Breakdown
             </h2>
             <div className="flex gap-4">
               <div className="flex-1">
-                <p className="text-lg font-bold text-gray-100">
+                <p className="text-lg font-bold text-gray-900 dark:text-gray-100">
                   {stats.modeBreakdown.clicktrain}
                 </p>
                 <p className="text-xs text-gray-500">Click Train</p>
               </div>
               <div className="flex-1">
-                <p className="text-lg font-bold text-gray-100">
+                <p className="text-lg font-bold text-gray-900 dark:text-gray-100">
                   {stats.modeBreakdown.binaural}
                 </p>
                 <p className="text-xs text-gray-500">Binaural</p>
-              </div>
-              <div className="flex-1">
-                <p className="text-lg font-bold text-gray-100">
-                  {stats.modeBreakdown.combined}
-                </p>
-                <p className="text-xs text-gray-500">Combined</p>
               </div>
             </div>
           </div>
@@ -295,7 +298,7 @@ export default function DashboardPage() {
         {/* Session History */}
         <div className="mt-8">
           <div className="mb-4 flex items-center justify-between">
-            <h2 className="text-lg font-semibold text-gray-100">
+            <h2 className="text-lg font-semibold text-gray-900 dark:text-gray-100">
               Session History
             </h2>
             {sessions.length > 0 && (
@@ -311,8 +314,10 @@ export default function DashboardPage() {
           </div>
 
           {sessions.length === 0 ? (
-            <div className="rounded-xl border border-gray-700 bg-gray-800/50 p-8 text-center">
-              <p className="text-gray-400">No sessions yet</p>
+            <div className="rounded-xl border border-gray-300 dark:border-gray-700 bg-gray-100/50 dark:bg-gray-800/50 p-8 text-center">
+              <p className="text-gray-600 dark:text-gray-400">
+                No sessions yet
+              </p>
               <p className="mt-1 text-sm text-gray-500">
                 Complete your first session to see it here
               </p>
@@ -343,7 +348,7 @@ export default function DashboardPage() {
         title="Clear All History?"
       >
         <div className="space-y-4">
-          <p className="text-gray-300">
+          <p className="text-gray-700 dark:text-gray-300">
             This will permanently delete all {sessions.length} sessions. This
             action cannot be undone.
           </p>

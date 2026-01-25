@@ -182,32 +182,6 @@ export function useAudioEngine({
     }, 1000);
   }, []);
 
-  const startCombined = useCallback(() => {
-    // Start both click train and binaural
-    startBinauralBeats();
-
-    // Add click train on top
-    const pulseInterval = 1000 / DEFAULT_AUDIO_CONFIG.pulseRate;
-    const clickInterval = setInterval(() => {
-      playClickTrainBurst();
-    }, pulseInterval);
-
-    // Store the click interval separately (we'll clear both on stop)
-    const originalInterval = intervalRef.current;
-    intervalRef.current = setInterval(() => {
-      // This is just a placeholder - the actual counting happens in startBinauralBeats
-    }, 1000);
-
-    // Override stop to clear both
-    const originalOscillators = oscillatorsRef.current;
-    oscillatorsRef.current = [...originalOscillators];
-
-    // Clean up click interval when stopping
-    return () => {
-      clearInterval(clickInterval);
-    };
-  }, [startBinauralBeats, playClickTrainBurst]);
-
   const start = useCallback(async () => {
     const initialized = await initAudioContext();
     if (!initialized) return;
@@ -221,11 +195,8 @@ export function useAudioEngine({
       case "binaural":
         startBinauralBeats();
         break;
-      case "combined":
-        startCombined();
-        break;
     }
-  }, [initAudioContext, startClickTrain, startBinauralBeats, startCombined]);
+  }, [initAudioContext, startClickTrain, startBinauralBeats]);
 
   const stop = useCallback(() => {
     setIsPlaying(false);

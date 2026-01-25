@@ -15,12 +15,12 @@ const steps = [
   {
     title: "Welcome to 40Hz Auditory Therapy",
     content: (
-      <div className="space-y-4 text-gray-300">
+      <div className="space-y-4 text-gray-700 dark:text-gray-300">
         <p>
           This app generates 40Hz audio stimulation based on scientific research
           showing potential cognitive benefits from gamma brainwave entrainment.
         </p>
-        <p className="text-sm text-gray-400">
+        <p className="text-sm text-gray-500 dark:text-gray-400">
           Research suggests regular 40Hz stimulation may support brain health,
           enhance focus, and promote neural synchronization.
         </p>
@@ -31,14 +31,16 @@ const steps = [
     title: "Choose Your Mode",
     content: (
       <div className="space-y-4">
-        <div className="rounded-lg border border-gray-700 bg-gray-800 p-4">
+        <div className="rounded-lg border border-gray-300 dark:border-gray-700 bg-gray-100 dark:bg-gray-800 p-4">
           <div className="flex items-center gap-3">
             <div className="flex h-10 w-10 items-center justify-center rounded-lg bg-green-500/20">
-              <Radio className="h-5 w-5 text-green-400" />
+              <Radio className="h-5 w-5 text-green-600 dark:text-green-400" />
             </div>
             <div>
-              <p className="font-medium text-gray-100">Click Train</p>
-              <p className="text-sm text-gray-400">
+              <p className="font-medium text-gray-900 dark:text-gray-100">
+                Click Train
+              </p>
+              <p className="text-sm text-gray-500 dark:text-gray-400">
                 1ms bursts of 1kHz tone at 40Hz - matches the PNAS study
                 protocol
               </p>
@@ -46,14 +48,16 @@ const steps = [
           </div>
         </div>
 
-        <div className="rounded-lg border border-gray-700 bg-gray-800 p-4">
+        <div className="rounded-lg border border-gray-300 dark:border-gray-700 bg-gray-100 dark:bg-gray-800 p-4">
           <div className="flex items-center gap-3">
             <div className="flex h-10 w-10 items-center justify-center rounded-lg bg-cyan-500/20">
-              <Waves className="h-5 w-5 text-cyan-400" />
+              <Waves className="h-5 w-5 text-cyan-600 dark:text-cyan-400" />
             </div>
             <div>
-              <p className="font-medium text-gray-100">Binaural Beats</p>
-              <p className="text-sm text-gray-400">
+              <p className="font-medium text-gray-900 dark:text-gray-100">
+                Binaural Beats
+              </p>
+              <p className="text-sm text-gray-500 dark:text-gray-400">
                 200Hz in left ear, 240Hz in right - brain perceives 40Hz
               </p>
             </div>
@@ -63,22 +67,22 @@ const steps = [
     ),
   },
   {
-    title: "Important: Use Headphones",
+    title: "Recommended: Use Headphones",
     content: (
       <div className="space-y-4">
         <div className="flex justify-center">
           <div className="flex h-20 w-20 items-center justify-center rounded-full bg-amber-500/20">
-            <Headphones className="h-10 w-10 text-amber-400" />
+            <Headphones className="h-10 w-10 text-amber-600 dark:text-amber-400" />
           </div>
         </div>
         <div className="space-y-3 text-center">
-          <p className="text-gray-300">
-            For <strong>Binaural Beats</strong> mode, stereo headphones are
-            required to perceive the 40Hz effect.
+          <p className="text-gray-700 dark:text-gray-300">
+            Stereo headphones are recommended for both modes to ensure optimal
+            delivery of the 40Hz stimulation.
           </p>
-          <p className="text-sm text-gray-400">
-            Click Train mode works with any audio output, but headphones are
-            still recommended for the best experience.
+          <p className="text-sm text-gray-500 dark:text-gray-400">
+            Binaural Beats mode requires headphones to work, as each ear
+            receives a different frequency.
           </p>
         </div>
       </div>
@@ -88,15 +92,17 @@ const steps = [
     title: "Ready to Start",
     content: (
       <div className="space-y-4 text-center">
-        <p className="text-gray-300">
+        <p className="text-gray-700 dark:text-gray-300">
           Start with the recommended 60-minute session to match the research
           protocol. You can adjust the duration anytime.
         </p>
-        <div className="rounded-lg bg-gray-800 p-4">
-          <p className="text-sm text-gray-400">
-            <strong className="text-gray-300">Tip:</strong> Use the keyboard
-            shortcuts for quick control. Press{" "}
-            <kbd className="rounded bg-gray-700 px-1.5 py-0.5 text-xs">?</kbd>{" "}
+        <div className="rounded-lg bg-gray-100 dark:bg-gray-800 p-4">
+          <p className="text-sm text-gray-500 dark:text-gray-400">
+            <strong className="text-gray-700 dark:text-gray-300">Tip:</strong>{" "}
+            Use the keyboard shortcuts for quick control. Press{" "}
+            <kbd className="rounded bg-gray-200 dark:bg-gray-700 px-1.5 py-0.5 text-xs">
+              ?
+            </kbd>{" "}
             anytime to see all shortcuts.
           </p>
         </div>
@@ -139,11 +145,11 @@ export function OnboardingModal({
       <div className="absolute inset-0 bg-black/80 backdrop-blur-sm" />
 
       {/* Modal */}
-      <div className="relative z-10 w-full max-w-md rounded-xl border border-gray-700 bg-gray-800 p-6 shadow-2xl">
+      <div className="relative z-10 w-full max-w-md rounded-xl border border-gray-300 dark:border-gray-700 bg-white dark:bg-gray-800 p-6 shadow-2xl">
         {/* Close button */}
         <button
           onClick={handleSkip}
-          className="absolute right-4 top-4 rounded-lg p-1 text-gray-400 hover:bg-gray-700 hover:text-gray-100"
+          className="absolute right-4 top-4 rounded-lg p-1 text-gray-500 dark:text-gray-400 hover:bg-gray-100 dark:hover:bg-gray-700 hover:text-gray-900 dark:hover:text-gray-100"
           aria-label="Skip onboarding"
         >
           <X className="h-5 w-5" />
@@ -156,7 +162,9 @@ export function OnboardingModal({
               key={index}
               className={cn(
                 "h-1.5 w-8 rounded-full transition-colors",
-                index === currentStep ? "bg-green-500" : "bg-gray-700",
+                index === currentStep
+                  ? "bg-green-500"
+                  : "bg-gray-300 dark:bg-gray-700",
               )}
             />
           ))}
@@ -164,7 +172,7 @@ export function OnboardingModal({
 
         {/* Content */}
         <div className="mb-6">
-          <h2 className="mb-4 text-xl font-semibold text-gray-100">
+          <h2 className="mb-4 text-xl font-semibold text-gray-900 dark:text-gray-100">
             {step.title}
           </h2>
           {step.content}

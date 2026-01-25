@@ -39,7 +39,7 @@ export function VisualFlicker({ isActive, className }: VisualFlickerProps) {
     <div
       className={cn(
         "pointer-events-none fixed inset-0 z-50 transition-opacity duration-[12ms]",
-        isOn ? "bg-white/10" : "bg-transparent",
+        isOn ? "bg-black/10 dark:bg-white/10" : "bg-transparent",
         className,
       )}
       aria-hidden="true"

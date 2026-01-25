@@ -1,6 +1,6 @@
 "use client";
 
-import { Waves, Radio, Combine, Headphones } from "lucide-react";
+import { Waves, Radio, Headphones } from "lucide-react";
 import { type TherapyMode } from "@/types";
 import { cn } from "@/lib/utils";
 
@@ -29,12 +29,6 @@ const modes: {
     icon: Waves,
     description: "40Hz binaural beats (requires headphones)",
   },
-  {
-    value: "combined",
-    label: "Combined",
-    icon: Combine,
-    description: "Both modes together for enhanced effect",
-  },
 ];
 
 export function ModeSelector({
@@ -44,11 +38,11 @@ export function ModeSelector({
   className,
 }: ModeSelectorProps) {
   const selectedMode = modes.find((m) => m.value === mode);
-  const needsHeadphones = mode === "binaural" || mode === "combined";
+  const headphonesRequired = mode === "binaural";
 
   return (
     <div className={cn("w-full", className)}>
-      <div className="grid grid-cols-3 gap-2">
+      <div className="grid grid-cols-2 gap-2">
         {modes.map((m) => {
           const Icon = m.icon;
           const isSelected = mode === m.value;
@@ -61,10 +55,10 @@ export function ModeSelector({
               className={cn(
                 "flex flex-col items-center gap-2 rounded-lg p-3 transition-all",
                 "border-2",
-                "focus:outline-none focus:ring-2 focus:ring-green-500 focus:ring-offset-2 focus:ring-offset-gray-900",
+                "focus:outline-none focus:ring-2 focus:ring-green-500 focus:ring-offset-2 focus:ring-offset-white dark:focus:ring-offset-gray-900",
                 isSelected
-                  ? "border-green-500 bg-green-500/10 text-green-400"
-                  : "border-gray-700 bg-gray-800 text-gray-400 hover:border-gray-600 hover:bg-gray-750",
+                  ? "border-green-500 bg-green-500/10 text-green-600 dark:text-green-400"
+                  : "border-gray-300 dark:border-gray-700 bg-gray-100 dark:bg-gray-800 text-gray-600 dark:text-gray-400 hover:border-gray-400 dark:hover:border-gray-600 hover:bg-gray-200 dark:hover:bg-gray-750",
                 disabled && "cursor-not-allowed opacity-50",
               )}
               aria-pressed={isSelected}
@@ -79,13 +73,15 @@ export function ModeSelector({
 
       {/* Mode description */}
       <div className="mt-3 text-center">
-        <p className="text-sm text-gray-400">{selectedMode?.description}</p>
-        {needsHeadphones && (
-          <div className="mt-2 flex items-center justify-center gap-1 text-xs text-amber-400">
-            <Headphones className="h-3 w-3" />
-            <span>Stereo headphones required</span>
-          </div>
-        )}
+        <p className="text-sm text-gray-600 dark:text-gray-400">
+          {selectedMode?.description}
+        </p>
+        <div className="mt-2 flex items-center justify-center gap-1 text-xs text-amber-600 dark:text-amber-400">
+          <Headphones className="h-3 w-3" />
+          <span>
+            Stereo headphones {headphonesRequired ? "required" : "recommended"}
+          </span>
+        </div>
       </div>
     </div>
   );

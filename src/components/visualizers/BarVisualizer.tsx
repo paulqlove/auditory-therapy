@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useState, useCallback } from "react";
+import { useEffect, useState, useCallback, useMemo } from "react";
 import { cn } from "@/lib/utils";
 
 interface BarVisualizerProps {
@@ -11,12 +11,32 @@ interface BarVisualizerProps {
 
 const BAR_COUNT = 20;
 
+// Stable initial heights for SSR (avoids hydration mismatch)
+const INITIAL_HEIGHTS = [
+  30, 25, 35, 28, 32, 26, 38, 24, 36, 29, 31, 27, 33, 25, 34, 28, 30, 26, 35,
+  32,
+];
+
 export function BarVisualizer({
   isPlaying,
   pulseCount,
   className,
 }: BarVisualizerProps) {
   const [activeBars, setActiveBars] = useState<Set<number>>(new Set());
+  const [barHeights, setBarHeights] = useState<number[]>(INITIAL_HEIGHTS);
+  const [activeHeights, setActiveHeights] = useState<number[]>(() =>
+    Array.from({ length: BAR_COUNT }, () => 80),
+  );
+
+  // Generate random heights on client mount
+  useEffect(() => {
+    setBarHeights(
+      Array.from({ length: BAR_COUNT }, () => 20 + Math.random() * 20),
+    );
+    setActiveHeights(
+      Array.from({ length: BAR_COUNT }, () => 60 + Math.random() * 40),
+    );
+  }, []);
 
   const triggerPulse = useCallback(() => {
     // Randomly activate 3-7 bars
@@ -28,6 +48,11 @@ export function BarVisualizer({
     }
 
     setActiveBars(newActiveBars);
+
+    // Regenerate active heights for variety
+    setActiveHeights(
+      Array.from({ length: BAR_COUNT }, () => 60 + Math.random() * 40),
+    );
 
     // Reset after 20ms
     setTimeout(() => {
@@ -49,8 +74,7 @@ export function BarVisualizer({
     >
       {Array.from({ length: BAR_COUNT }).map((_, index) => {
         const isActive = activeBars.has(index);
-        const baseHeight = 20 + Math.random() * 20;
-        const activeHeight = 60 + Math.random() * 40;
+        const height = isActive ? activeHeights[index] : barHeights[index];
 
         return (
           <div
@@ -60,11 +84,11 @@ export function BarVisualizer({
               isActive
                 ? "bg-green-400"
                 : isPlaying
-                  ? "bg-gray-600"
-                  : "bg-gray-700",
+                  ? "bg-gray-400 dark:bg-gray-600"
+                  : "bg-gray-300 dark:bg-gray-700",
             )}
             style={{
-              height: `${isActive ? activeHeight : baseHeight}%`,
+              height: `${height}%`,
             }}
           />
         );

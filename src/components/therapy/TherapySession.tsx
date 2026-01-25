@@ -1,7 +1,7 @@
 "use client";
 
 import { useEffect, useCallback, useState, useRef } from "react";
-import { Settings, HelpCircle, BarChart2 } from "lucide-react";
+import { Settings, HelpCircle, BarChart2, Github } from "lucide-react";
 import Link from "next/link";
 
 import { Timer } from "./Timer";
@@ -15,7 +15,9 @@ import { VisualFlicker } from "@/components/visualizers/VisualFlicker";
 import { Slider } from "@/components/ui/Slider";
 import { Button } from "@/components/ui/Button";
 import { Modal } from "@/components/ui/Modal";
+import { Drawer } from "@/components/ui/Drawer";
 import { OnboardingModal } from "@/components/onboarding/OnboardingModal";
+import { SettingsPanel } from "@/components/settings/SettingsPanel";
 
 import { useAudioEngine } from "@/hooks/useAudioEngine";
 import { useWakeLock } from "@/hooks/useWakeLock";
@@ -30,6 +32,7 @@ import { generateId } from "@/lib/utils";
 
 export function TherapySession() {
   const [showHelp, setShowHelp] = useState(false);
+  const [showSettings, setShowSettings] = useState(false);
   const [showCompletionModal, setShowCompletionModal] = useState(false);
   const [sessionNotes, setSessionNotes] = useState("");
   const timerRef = useRef<ReturnType<typeof setInterval> | null>(null);
@@ -202,7 +205,7 @@ export function TherapySession() {
     onReset: handleReset,
     onSwitchMode: () => {
       if (!isPlaying) {
-        const modes = ["clicktrain", "binaural", "combined"] as const;
+        const modes = ["clicktrain", "binaural"] as const;
         const currentIndex = modes.indexOf(mode);
         const nextMode = modes[(currentIndex + 1) % modes.length];
         setMode(nextMode);
@@ -229,7 +232,7 @@ export function TherapySession() {
   }, []);
 
   return (
-    <div className="flex min-h-screen flex-col bg-gray-900">
+    <div className="flex min-h-screen flex-col bg-white dark:bg-gray-900">
       {/* Onboarding Modal */}
       <OnboardingModal
         isOpen={showOnboarding}
@@ -241,8 +244,8 @@ export function TherapySession() {
       <VisualFlicker isActive={isPlaying && visualFlicker} />
 
       {/* Header */}
-      <header className="flex items-center justify-between border-b border-gray-800 px-4 py-3">
-        <h1 className="text-lg font-semibold text-gray-100">
+      <header className="flex items-center justify-between border-b border-gray-200 dark:border-gray-800 px-4 py-3">
+        <h1 className="text-lg font-semibold text-gray-900 dark:text-gray-100">
           40Hz Auditory Therapy
         </h1>
         <div className="flex items-center gap-2">
@@ -259,11 +262,23 @@ export function TherapySession() {
           >
             <HelpCircle className="h-4 w-4" />
           </Button>
-          <Link href="/settings">
-            <Button variant="ghost" size="sm" aria-label="Settings">
-              <Settings className="h-4 w-4" />
+          <Button
+            variant="ghost"
+            size="sm"
+            onClick={() => setShowSettings(true)}
+            aria-label="Settings"
+          >
+            <Settings className="h-4 w-4" />
+          </Button>
+          <a
+            href="https://github.com/paulqlove/auditory-therapy#readme"
+            target="_blank"
+            rel="noopener noreferrer"
+          >
+            <Button variant="ghost" size="sm" aria-label="View on GitHub">
+              <Github className="h-4 w-4" />
             </Button>
-          </Link>
+          </a>
         </div>
       </header>
 
@@ -330,13 +345,13 @@ export function TherapySession() {
         />
 
         {/* Visual Flicker Toggle */}
-        <label className="flex items-center gap-2 text-sm text-gray-400">
+        <label className="flex items-center gap-2 text-sm text-gray-600 dark:text-gray-400">
           <input
             type="checkbox"
             checked={visualFlicker}
             onChange={(e) => setVisualFlicker(e.target.checked)}
             disabled={isPlaying}
-            className="h-4 w-4 rounded border-gray-600 bg-gray-700 text-green-500 focus:ring-green-500 focus:ring-offset-gray-900"
+            className="h-4 w-4 rounded border-gray-400 dark:border-gray-600 bg-gray-200 dark:bg-gray-700 text-green-500 focus:ring-green-500 focus:ring-offset-white dark:focus:ring-offset-gray-900"
           />
           Enable visual flicker (40Hz screen flash)
         </label>
@@ -362,8 +377,10 @@ export function TherapySession() {
               key={shortcut.action}
               className="flex items-center justify-between py-1"
             >
-              <span className="text-gray-300">{shortcut.description}</span>
-              <kbd className="rounded bg-gray-700 px-2 py-1 font-mono text-sm text-gray-300">
+              <span className="text-gray-700 dark:text-gray-300">
+                {shortcut.description}
+              </span>
+              <kbd className="rounded bg-gray-200 dark:bg-gray-700 px-2 py-1 font-mono text-sm text-gray-700 dark:text-gray-300">
                 {shortcut.key}
               </kbd>
             </div>
@@ -378,21 +395,21 @@ export function TherapySession() {
         title="Session Complete!"
       >
         <div className="space-y-4">
-          <p className="text-gray-300">
+          <p className="text-gray-700 dark:text-gray-300">
             Great work! You completed{" "}
             {Math.round((duration - remainingTime) / 60)} minutes of 40Hz
             therapy.
           </p>
 
           <div>
-            <label className="mb-2 block text-sm font-medium text-gray-300">
+            <label className="mb-2 block text-sm font-medium text-gray-700 dark:text-gray-300">
               Session Notes (optional)
             </label>
             <textarea
               value={sessionNotes}
               onChange={(e) => setSessionNotes(e.target.value)}
               placeholder="How did you feel during this session?"
-              className="w-full rounded-lg border border-gray-600 bg-gray-700 px-3 py-2 text-gray-100 placeholder-gray-500 focus:border-green-500 focus:outline-none focus:ring-1 focus:ring-green-500"
+              className="w-full rounded-lg border border-gray-300 dark:border-gray-600 bg-gray-100 dark:bg-gray-700 px-3 py-2 text-gray-900 dark:text-gray-100 placeholder-gray-500 focus:border-green-500 focus:outline-none focus:ring-1 focus:ring-green-500"
               rows={3}
             />
           </div>
@@ -402,6 +419,15 @@ export function TherapySession() {
           </Button>
         </div>
       </Modal>
+
+      {/* Settings Drawer */}
+      <Drawer
+        isOpen={showSettings}
+        onClose={() => setShowSettings(false)}
+        title="Settings"
+      >
+        <SettingsPanel />
+      </Drawer>
     </div>
   );
 }

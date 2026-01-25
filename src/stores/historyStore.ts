@@ -30,7 +30,6 @@ const initialStats: SessionStats = {
   modeBreakdown: {
     clicktrain: 0,
     binaural: 0,
-    combined: 0,
   },
 };
 
@@ -71,11 +70,13 @@ function calculateStats(sessions: CompletedSession[]): SessionStats {
   const modeBreakdown: Record<TherapyMode, number> = {
     clicktrain: 0,
     binaural: 0,
-    combined: 0,
   };
 
   sessions.forEach((s) => {
-    modeBreakdown[s.mode]++;
+    // Only count modes that still exist (ignore historical "combined" sessions)
+    if (s.mode in modeBreakdown) {
+      modeBreakdown[s.mode]++;
+    }
   });
 
   return {

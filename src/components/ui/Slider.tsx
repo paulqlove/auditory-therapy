@@ -34,10 +34,14 @@ export function Slider({
       {(label || showValue) && (
         <div className="mb-2 flex items-center justify-between text-sm">
           {label && (
-            <label className="font-medium text-gray-300">{label}</label>
+            <label className="font-medium text-gray-700 dark:text-gray-300">
+              {label}
+            </label>
           )}
           {showValue && (
-            <span className="text-gray-400">{formatValue(value)}</span>
+            <span className="text-gray-500 dark:text-gray-400">
+              {formatValue(value)}
+            </span>
           )}
         </div>
       )}
@@ -52,7 +56,7 @@ export function Slider({
           disabled={disabled}
           className={cn(
             "w-full h-2 rounded-full appearance-none cursor-pointer",
-            "bg-gray-700",
+            "bg-gray-300 dark:bg-gray-700",
             "disabled:opacity-50 disabled:cursor-not-allowed",
             // Thumb styling
             "[&::-webkit-slider-thumb]:appearance-none",
@@ -70,7 +74,7 @@ export function Slider({
             "[&::-moz-range-thumb]:cursor-pointer",
           )}
           style={{
-            background: `linear-gradient(to right, #22c55e 0%, #22c55e ${percentage}%, #374151 ${percentage}%, #374151 100%)`,
+            background: `linear-gradient(to right, #22c55e 0%, #22c55e ${percentage}%, var(--slider-track, #d1d5db) ${percentage}%, var(--slider-track, #d1d5db) 100%)`,
           }}
           aria-label={label}
           aria-valuenow={value}

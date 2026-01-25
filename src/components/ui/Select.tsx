@@ -28,7 +28,7 @@ export function Select({
   return (
     <div className={cn("w-full", className)}>
       {label && (
-        <label className="mb-2 block text-sm font-medium text-gray-300">
+        <label className="mb-2 block text-sm font-medium text-gray-700 dark:text-gray-300">
           {label}
         </label>
       )}
@@ -38,9 +38,9 @@ export function Select({
           onChange={(e) => onChange(e.target.value)}
           disabled={disabled}
           className={cn(
-            "w-full appearance-none rounded-lg bg-gray-700 px-4 py-2 pr-10",
-            "text-gray-100 text-base",
-            "border border-gray-600",
+            "w-full appearance-none rounded-lg bg-gray-100 dark:bg-gray-700 px-4 py-2 pr-10",
+            "text-gray-900 dark:text-gray-100 text-base",
+            "border border-gray-300 dark:border-gray-600",
             "focus:outline-none focus:ring-2 focus:ring-green-500 focus:border-transparent",
             "disabled:opacity-50 disabled:cursor-not-allowed",
             "cursor-pointer",
@@ -52,7 +52,7 @@ export function Select({
             </option>
           ))}
         </select>
-        <ChevronDown className="pointer-events-none absolute right-3 top-1/2 h-4 w-4 -translate-y-1/2 text-gray-400" />
+        <ChevronDown className="pointer-events-none absolute right-3 top-1/2 h-4 w-4 -translate-y-1/2 text-gray-500 dark:text-gray-400" />
       </div>
     </div>
   );

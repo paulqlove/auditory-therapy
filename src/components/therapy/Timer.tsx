@@ -24,7 +24,7 @@ export function Timer({
       <div
         className={cn(
           "font-mono text-7xl font-bold tracking-tight",
-          "text-gray-100",
+          "text-gray-900 dark:text-gray-100",
           isPlaying && "animate-pulse",
         )}
         role="timer"
@@ -36,7 +36,7 @@ export function Timer({
 
       {/* Progress bar */}
       <div className="w-full max-w-md">
-        <div className="h-2 w-full overflow-hidden rounded-full bg-gray-700">
+        <div className="h-2 w-full overflow-hidden rounded-full bg-gray-300 dark:bg-gray-700">
           <div
             className={cn(
               "h-full rounded-full transition-all duration-1000 ease-linear",

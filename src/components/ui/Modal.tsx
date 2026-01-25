@@ -65,8 +65,8 @@ export function Modal({
         ref={modalRef}
         tabIndex={-1}
         className={cn(
-          "relative z-10 w-full max-w-md rounded-xl bg-gray-800 p-6 shadow-2xl",
-          "border border-gray-700",
+          "relative z-10 w-full max-w-md rounded-xl bg-white dark:bg-gray-800 p-6 shadow-2xl",
+          "border border-gray-300 dark:border-gray-700",
           "animate-in fade-in zoom-in-95 duration-200",
           className,
         )}
@@ -76,13 +76,13 @@ export function Modal({
           <div className="mb-4 flex items-center justify-between">
             <h2
               id="modal-title"
-              className="text-xl font-semibold text-gray-100"
+              className="text-xl font-semibold text-gray-900 dark:text-gray-100"
             >
               {title}
             </h2>
             <button
               onClick={onClose}
-              className="rounded-lg p-1 text-gray-400 hover:bg-gray-700 hover:text-gray-100 focus:outline-none focus:ring-2 focus:ring-gray-500"
+              className="rounded-lg p-1 text-gray-500 dark:text-gray-400 hover:bg-gray-100 dark:hover:bg-gray-700 hover:text-gray-900 dark:hover:text-gray-100 focus:outline-none focus:ring-2 focus:ring-gray-500"
               aria-label="Close modal"
             >
               <X className="h-5 w-5" />

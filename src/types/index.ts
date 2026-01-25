@@ -1,5 +1,5 @@
 // Therapy Mode Types
-export type TherapyMode = "clicktrain" | "binaural" | "combined";
+export type TherapyMode = "clicktrain" | "binaural";
 
 export type SessionStatus = "idle" | "playing" | "paused" | "completed";
 
