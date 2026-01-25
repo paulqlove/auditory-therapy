@@ -2,6 +2,8 @@
 
 A web-based 40-Hz auditory stimulation therapy tool designed to replicate methodology from scientific research on gamma brainwave entrainment for cognitive enhancement and potential therapeutic benefits.
 
+**Try it now:** https://paulqlove.github.io/auditory-therapy/
+
 ## Scientific Background
 
 ### The Theory
