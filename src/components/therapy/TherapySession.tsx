@@ -71,43 +71,22 @@ export function TherapySession() {
   const defaultDuration = usePreferencesStore((state) => state.defaultDuration);
   const defaultVolume = usePreferencesStore((state) => state.defaultVolume);
 
-  // Apply user's default preferences on initial load
-  const preferencesApplied = useRef(false);
+  // Apply user's default preferences on initial load (after hydration from localStorage)
+  const [preferencesApplied, setPreferencesApplied] = useState(false);
   useEffect(() => {
-    // Wait for preferences to hydrate from localStorage
-    // Default values from DEFAULT_PREFERENCES won't match user's saved preferences
-    const unsubscribe = usePreferencesStore.persist.onFinishHydration(() => {
-      if (!preferencesApplied.current && status === "idle") {
-        const prefs = usePreferencesStore.getState();
-        setMode(prefs.defaultMode);
-        setDuration(prefs.defaultDuration);
-        setVolume(prefs.defaultVolume);
-        preferencesApplied.current = true;
-      }
-    });
+    if (preferencesApplied || status !== "idle") return;
 
-    // If already hydrated, apply immediately
-    if (
-      usePreferencesStore.persist.hasHydrated() &&
-      !preferencesApplied.current &&
-      status === "idle"
-    ) {
-      setMode(defaultMode);
-      setDuration(defaultDuration);
-      setVolume(defaultVolume);
-      preferencesApplied.current = true;
-    }
+    // Small delay to ensure zustand has hydrated from localStorage
+    const timeoutId = setTimeout(() => {
+      const prefs = usePreferencesStore.getState();
+      setMode(prefs.defaultMode);
+      setDuration(prefs.defaultDuration);
+      setVolume(prefs.defaultVolume);
+      setPreferencesApplied(true);
+    }, 50);
 
-    return unsubscribe;
-  }, [
-    status,
-    defaultMode,
-    defaultDuration,
-    defaultVolume,
-    setMode,
-    setDuration,
-    setVolume,
-  ]);
+    return () => clearTimeout(timeoutId);
+  }, [preferencesApplied, status, setMode, setDuration, setVolume]);
 
   const isPlaying = status === "playing";
 
