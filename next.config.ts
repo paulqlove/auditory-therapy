@@ -1,17 +1,15 @@
 import type { NextConfig } from "next";
-import withPWAInit from "next-pwa";
-
-const withPWA = withPWAInit({
-  dest: "public",
-  disable: process.env.NODE_ENV === "development",
-  register: true,
-  skipWaiting: true,
-});
 
 const nextConfig: NextConfig = {
   reactStrictMode: true,
-  // Use webpack instead of turbopack for PWA compatibility
-  turbopack: {},
+  // Enable static export for GitHub Pages
+  output: "export",
+  // Set base path for GitHub Pages (repo name)
+  basePath: process.env.NODE_ENV === "production" ? "/auditory-therapy" : "",
+  // Disable image optimization for static export
+  images: {
+    unoptimized: true,
+  },
 };
 
-export default withPWA(nextConfig);
+export default nextConfig;
