@@ -24,9 +24,39 @@ A [January 2026 study](https://www.pnas.org/doi/10.1073/pnas.2529565123) from th
 - **Duration of effect**: Unlike rodent studies where effects disappeared after 7 days, the elevated Aβ levels in primates persisted for more than 5 weeks
 - **Significance**: First primate evidence that 40-Hz auditory stimulation can sustainably modulate Aβ metabolism in the brain
 
-## Audio Implementation
+## Cognitive Enhancement & Focus
 
-This app replicates the exact auditory stimulus parameters from the PNAS study:
+Beyond therapeutic applications, 40-Hz gamma entrainment has shown promise for cognitive enhancement in healthy individuals.
+
+### Gamma Waves and Peak Performance
+
+Gamma oscillations (30-80 Hz) are associated with:
+- **Heightened focus and concentration** - Reduced susceptibility to external distractions
+- **Enhanced working memory** - Improved information processing and retention
+- **Flow states** - The mental state of complete immersion in an activity
+- **Cross-brain communication** - Synchronized neural activity across different brain regions
+
+### Research on Cognitive Enhancement
+
+- An [exploratory pilot study](https://pmc.ncbi.nlm.nih.gov/articles/PMC7683678/) found that 40-Hz entrainment improved mood, memory, and cognition, with participants showing mean cognitive score improvements from 75% to 85%
+- [MIT research](https://news.mit.edu/2025/evidence-40hz-gamma-stimulation-promotes-brain-health-expanding-0314) on "GENUS" (Gamma Entrainment Using Sensory Stimulation) has shown benefits extending beyond Alzheimer's to general brain health
+- [Research in Frontiers](https://www.frontiersin.org/journals/aging-neuroscience/articles/10.3389/fnagi.2022.1010765/full) showed that combining cognitive tasks with 40-Hz stimulation enhances gamma entrainment and propagates it to deep brain areas including the hippocampus
+
+### How It May Enhance Focus
+
+When the brain is entrained to 40-Hz gamma oscillations:
+1. **Neural synchronization** increases across brain regions
+2. **Information binding** improves - the brain more effectively combines sensory inputs into coherent perception
+3. **Attentional resources** are enhanced, making it easier to maintain focus on demanding tasks
+4. **Default mode network** activity may decrease, reducing mind-wandering
+
+## Audio Modes
+
+This app offers two distinct 40-Hz stimulation methods, each backed by research:
+
+### Mode 1: Click Train (PNAS Study Protocol)
+
+Replicates the exact auditory stimulus parameters from the PNAS 2026 primate study:
 
 | Parameter | Study Protocol | This App |
 |-----------|---------------|----------|
@@ -37,18 +67,57 @@ This app replicates the exact auditory stimulus parameters from the PNAS study:
 | Treatment period | 7 consecutive days | User-managed |
 | Intensity | 60 dB | User-adjustable volume |
 
-### How It Works
-
-The stimulation consists of **click trains** - brief 1-millisecond bursts of a 1 kHz pure tone, repeated 40 times per second. This is different from continuous amplitude modulation; each "click" is a discrete sound event that creates the 40-Hz rhythm perceived by the auditory system and transmitted to the temporal cortex and hippocampus.
+**How it works**: Brief 1-millisecond bursts of a 1 kHz pure tone, repeated 40 times per second. Each "click" is a discrete sound event that creates the 40-Hz rhythm perceived by the auditory system.
 
 ```
-Sound pattern (not to scale):
+Click Train pattern (not to scale):
 
 |█|                       |█|                       |█|
 0ms                      25ms                     50ms
  └── 1ms burst            └── 1ms burst            └── 1ms burst
      of 1kHz                  of 1kHz                  of 1kHz
 ```
+
+**Best for**: Alzheimer's research protocol replication, direct auditory stimulation
+
+---
+
+### Mode 2: Binaural Beats (Cognitive Enhancement)
+
+Uses the psychoacoustic phenomenon of binaural beats, commonly used in cognitive enhancement research:
+
+| Parameter | This App |
+|-----------|----------|
+| Left ear frequency | 200 Hz continuous sine wave |
+| Right ear frequency | 240 Hz continuous sine wave |
+| Perceived beat frequency | 40 Hz (240 - 200 = 40) |
+| Headphones | **Required** (stereo) |
+
+**How it works**: Two slightly different frequencies are played to each ear. Your brain perceives a "phantom" beat at the frequency difference (40 Hz). This method was used in the [cognitive enhancement pilot study](https://pmc.ncbi.nlm.nih.gov/articles/PMC7683678/) that showed improvements in mood, memory, and cognition.
+
+```
+Binaural Beats pattern:
+
+Left Ear:   ∿∿∿∿∿∿∿∿∿∿∿∿∿∿∿∿  (200 Hz continuous)
+Right Ear:  ∿∿∿∿∿∿∿∿∿∿∿∿∿∿∿∿∿ (240 Hz continuous)
+Brain:      ▁▂▃▄▅▆▇█▇▆▅▄▃▂▁▂▃▄ (perceives 40 Hz beat)
+```
+
+**Best for**: Focus and concentration, cognitive enhancement, flow states, meditation
+
+---
+
+### Which Mode Should I Use?
+
+| Use Case | Recommended Mode |
+|----------|-----------------|
+| Following Alzheimer's research protocol | Click Train |
+| Focus and deep work | Either (try both) |
+| Cognitive enhancement | Binaural Beats |
+| No headphones available | Click Train |
+| Meditation/relaxation | Binaural Beats |
+
+**Research note**: [Comparative studies](https://www.researchgate.net/publication/356174078_Effects_of_binaural_beats_and_isochronic_tones_on_brain_wave_modulation_Literature_review) suggest that isochronic tones (similar to click trains) may produce stronger brainwave entrainment than binaural beats, showing 15% greater brain response. However, binaural beats have a larger body of cognitive enhancement research behind them.
 
 ## Features
 
@@ -106,8 +175,8 @@ Open [http://localhost:3000](http://localhost:3000) in your browser.
 ### Production Build
 
 ```bash
-# Build for production (use --webpack flag for PWA support)
-npm run build -- --webpack
+# Build for production
+npm run build
 
 # Start production server
 npm run start
@@ -147,6 +216,7 @@ src/
 │   ├── therapy/           # Session components
 │   ├── visualizers/       # Audio visualizations
 │   ├── onboarding/        # Tutorial components
+│   ├── settings/          # Settings panel
 │   └── ui/                # Reusable UI components
 ├── hooks/                  # Custom React hooks
 ├── stores/                 # Zustand state stores
@@ -156,11 +226,21 @@ src/
 
 ## References
 
+### Alzheimer's & Therapeutic Research
+
 1. Wang, W., Huang, R., Lv, L., et al. (2026). Long-term effects of forty-hertz auditory stimulation as a treatment of Alzheimer's disease: Insights from an aged monkey model study. *PNAS*, 123(2), e2529565123. https://doi.org/10.1073/pnas.2529565123
 
 2. Martorell, A.J., et al. (2019). Multi-sensory gamma stimulation ameliorates Alzheimer's-associated pathology and improves cognition. *Cell*, 177(2), 256-271.
 
 3. Iaccarino, H.F., et al. (2016). Gamma frequency entrainment attenuates amyloid load and modifies microglia. *Nature*, 540(7632), 230-235.
+
+### Cognitive Enhancement Research
+
+4. Jirakittayakorn, N. & Wongsawat, Y. (2017). Brain responses to 40-Hz binaural beat and effects on emotion and memory. *Int J Psychophysiol*, 120, 96-107.
+
+5. Carstensen, M.S., et al. (2020). Gamma entrainment frequency affects mood, memory and cognition: an exploratory pilot study. *BMC Neuroscience*. https://pmc.ncbi.nlm.nih.gov/articles/PMC7683678/
+
+6. Shen, L., et al. (2022). Cognitive tasks propagate the neural entrainment in response to a visual 40 Hz stimulation in humans. *Frontiers in Aging Neuroscience*. https://doi.org/10.3389/fnagi.2022.1010765
 
 ## Browser Support
 
@@ -170,12 +250,6 @@ src/
 - Edge 90+
 
 Note: Binaural beats require stereo headphones. Some features (Wake Lock) may have limited support on certain browsers.
-
-## Documentation
-
-- [Architecture](docs/ARCHITECTURE.md) - System design and component structure
-- [Code Quality](docs/CODE_QUALITY.md) - Coding standards and best practices
-- [Implementation Plan](docs/TODO.md) - Feature status and file listing
 
 ## Disclaimer
 
@@ -187,4 +261,4 @@ MIT
 
 ## Contributing
 
-Contributions are welcome! Please read the [Code Quality Guidelines](docs/CODE_QUALITY.md) before submitting.
+Contributions are welcome!
