@@ -33,13 +33,13 @@ export function SettingsPanel() {
   useEffect(() => {
     const getDevices = async () => {
       try {
-        // Need to request permission first
-        await navigator.mediaDevices.getUserMedia({ audio: true });
         const devices = await navigator.mediaDevices.enumerateDevices();
-        const outputs = devices.filter((d) => d.kind === "audiooutput");
+        const outputs = devices.filter(
+          (d) => d.kind === "audiooutput" && d.label,
+        );
         setAudioDevices(outputs);
       } catch {
-        // Permission denied or not supported
+        // Not supported
         console.log("Could not enumerate audio devices");
       }
     };
