@@ -67,9 +67,6 @@ export function TherapySession() {
   const setShowOnboarding = usePreferencesStore(
     (state) => state.setShowOnboarding,
   );
-  const defaultMode = usePreferencesStore((state) => state.defaultMode);
-  const defaultDuration = usePreferencesStore((state) => state.defaultDuration);
-  const defaultVolume = usePreferencesStore((state) => state.defaultVolume);
 
   // Apply user's default preferences on initial load (after hydration from localStorage)
   const [preferencesApplied, setPreferencesApplied] = useState(false);
