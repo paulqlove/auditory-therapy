@@ -21,15 +21,44 @@ export function Modal({
 }: ModalProps) {
   const modalRef = useRef<HTMLDivElement>(null);
   const previousActiveElement = useRef<HTMLElement | null>(null);
+  const hasInitialFocused = useRef(false);
+  const onCloseRef = useRef(onClose);
+
+  // Keep onClose ref updated without triggering effect re-runs
+  useEffect(() => {
+    onCloseRef.current = onClose;
+  }, [onClose]);
+
+  // Reset initial focus flag when modal closes
+  useEffect(() => {
+    if (!isOpen) {
+      hasInitialFocused.current = false;
+    }
+  }, [isOpen]);
 
   useEffect(() => {
     if (isOpen) {
       previousActiveElement.current = document.activeElement as HTMLElement;
-      modalRef.current?.focus();
+
+      // Only focus modal container on initial open, not on re-renders
+      if (!hasInitialFocused.current) {
+        hasInitialFocused.current = true;
+        // Use setTimeout to let autoFocus on children take precedence
+        setTimeout(() => {
+          const activeEl = document.activeElement;
+          const isInputFocused =
+            activeEl instanceof HTMLInputElement ||
+            activeEl instanceof HTMLTextAreaElement ||
+            activeEl instanceof HTMLSelectElement;
+          if (!isInputFocused && modalRef.current) {
+            modalRef.current.focus();
+          }
+        }, 0);
+      }
 
       const handleKeyDown = (e: KeyboardEvent) => {
         if (e.key === "Escape") {
-          onClose();
+          onCloseRef.current();
         }
       };
 
@@ -42,7 +71,7 @@ export function Modal({
         previousActiveElement.current?.focus();
       };
     }
-  }, [isOpen, onClose]);
+  }, [isOpen]);
 
   if (!isOpen) return null;
 
