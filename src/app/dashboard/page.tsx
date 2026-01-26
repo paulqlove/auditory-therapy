@@ -10,6 +10,7 @@ import {
   TrendingUp,
   Download,
   Trash2,
+  Pencil,
   ChevronDown,
   ChevronUp,
 } from "lucide-react";
@@ -56,9 +57,11 @@ function StatCard({
 function SessionItem({
   session,
   onDelete,
+  onEditNotes,
 }: {
   session: CompletedSession;
   onDelete: (id: string) => void;
+  onEditNotes: (session: CompletedSession) => void;
 }) {
   const [expanded, setExpanded] = useState(false);
 
@@ -146,7 +149,15 @@ function SessionItem({
             </div>
           )}
 
-          <div className="mt-4 flex justify-end">
+          <div className="mt-4 flex justify-end gap-2">
+            <Button
+              variant="ghost"
+              size="sm"
+              onClick={() => onEditNotes(session)}
+            >
+              <Pencil className="h-4 w-4" />
+              {session.notes ? "Edit Notes" : "Add Notes"}
+            </Button>
             <Button
               variant="ghost"
               size="sm"
@@ -164,8 +175,26 @@ function SessionItem({
 }
 
 export default function DashboardPage() {
-  const { sessions, stats, deleteSession, clearHistory } = useHistoryStore();
+  const { sessions, stats, deleteSession, clearHistory, updateSessionNotes } =
+    useHistoryStore();
   const [showClearConfirm, setShowClearConfirm] = useState(false);
+  const [editingSession, setEditingSession] = useState<CompletedSession | null>(
+    null,
+  );
+  const [editNotes, setEditNotes] = useState("");
+
+  const handleEditNotes = (session: CompletedSession) => {
+    setEditingSession(session);
+    setEditNotes(session.notes || "");
+  };
+
+  const handleSaveNotes = () => {
+    if (editingSession) {
+      updateSessionNotes(editingSession.id, editNotes.trim() || undefined);
+      setEditingSession(null);
+      setEditNotes("");
+    }
+  };
 
   const exportData = () => {
     const data = {
@@ -334,6 +363,7 @@ export default function DashboardPage() {
                   key={session.id}
                   session={session}
                   onDelete={deleteSession}
+                  onEditNotes={handleEditNotes}
                 />
               ))}
             </div>
@@ -369,6 +399,46 @@ export default function DashboardPage() {
               className="flex-1"
             >
               Clear All
+            </Button>
+          </div>
+        </div>
+      </Modal>
+
+      {/* Edit Notes Modal */}
+      <Modal
+        isOpen={!!editingSession}
+        onClose={() => {
+          setEditingSession(null);
+          setEditNotes("");
+        }}
+        title="Edit Session Notes"
+      >
+        <div className="space-y-4">
+          <textarea
+            value={editNotes}
+            onChange={(e) => setEditNotes(e.target.value)}
+            placeholder="Add notes about this session..."
+            className="w-full rounded-lg border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-700 px-3 py-2 text-gray-900 dark:text-gray-100 placeholder-gray-500 focus:border-green-500 focus:outline-none focus:ring-1 focus:ring-green-500 resize-none"
+            rows={4}
+            autoFocus
+          />
+          <div className="flex gap-3">
+            <Button
+              variant="secondary"
+              onClick={() => {
+                setEditingSession(null);
+                setEditNotes("");
+              }}
+              className="flex-1"
+            >
+              Cancel
+            </Button>
+            <Button
+              variant="primary"
+              onClick={handleSaveNotes}
+              className="flex-1"
+            >
+              Save
             </Button>
           </div>
         </div>

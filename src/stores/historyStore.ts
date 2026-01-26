@@ -13,7 +13,7 @@ interface HistoryState {
 
   // Actions
   addSession: (session: CompletedSession) => void;
-  updateSessionNotes: (sessionId: string, notes: string) => void;
+  updateSessionNotes: (sessionId: string, notes: string | undefined) => void;
   deleteSession: (sessionId: string) => void;
   clearHistory: () => void;
   recalculateStats: () => void;
