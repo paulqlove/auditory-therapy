@@ -1,7 +1,7 @@
 "use client";
 
 import { useEffect, useCallback, useState, useRef } from "react";
-import { Settings, HelpCircle, BarChart2, Github } from "lucide-react";
+import { Settings, HelpCircle, BarChart2, Github, Brain } from "lucide-react";
 import Link from "next/link";
 
 import { Timer } from "./Timer";
@@ -269,6 +269,11 @@ export function TherapySession() {
           <Link href="/dashboard">
             <Button variant="ghost" size="sm" aria-label="View dashboard">
               <BarChart2 className="h-4 w-4" />
+            </Button>
+          </Link>
+          <Link href="/science">
+            <Button variant="ghost" size="sm" aria-label="View the science">
+              <Brain className="h-4 w-4" />
             </Button>
           </Link>
           <Button
