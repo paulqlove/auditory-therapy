@@ -267,12 +267,22 @@ export function TherapySession() {
         </h1>
         <div className="flex items-center gap-2">
           <Link href="/dashboard">
-            <Button variant="ghost" size="sm" aria-label="View dashboard">
+            <Button
+              variant="ghost"
+              size="sm"
+              aria-label="Dashboard"
+              title="Dashboard"
+            >
               <BarChart2 className="h-4 w-4" />
             </Button>
           </Link>
           <Link href="/science">
-            <Button variant="ghost" size="sm" aria-label="View the science">
+            <Button
+              variant="ghost"
+              size="sm"
+              aria-label="The Science"
+              title="The Science"
+            >
               <Brain className="h-4 w-4" />
             </Button>
           </Link>
@@ -280,7 +290,8 @@ export function TherapySession() {
             variant="ghost"
             size="sm"
             onClick={() => setShowHelp(true)}
-            aria-label="Show keyboard shortcuts"
+            aria-label="Keyboard Shortcuts"
+            title="Keyboard Shortcuts"
           >
             <HelpCircle className="h-4 w-4" />
           </Button>
@@ -289,6 +300,7 @@ export function TherapySession() {
             size="sm"
             onClick={() => setShowSettings(true)}
             aria-label="Settings"
+            title="Settings"
           >
             <Settings className="h-4 w-4" />
           </Button>
@@ -297,7 +309,12 @@ export function TherapySession() {
             target="_blank"
             rel="noopener noreferrer"
           >
-            <Button variant="ghost" size="sm" aria-label="View on GitHub">
+            <Button
+              variant="ghost"
+              size="sm"
+              aria-label="GitHub"
+              title="GitHub"
+            >
               <Github className="h-4 w-4" />
             </Button>
           </a>
